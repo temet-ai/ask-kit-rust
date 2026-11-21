@@ -1,0 +1,93 @@
+{
+  "about": "Kinds of question agents answer by hand with cargo: did the suite pass and where is the first failure, is this crate's test broken, is clippy clean, does it compile, which crate pulls this dependency in, how many crates are in the workspace. Each is put to bench/fixture, a two-crate workspace in this kit with a compile error and a clippy warning behind features, two failing tests, and a dependency (itoa) in two versions. Paths are relative, so run the bench from the kit's folder. Expectations are what cargo says as of 2026-11-21, with Rust 1.98; the compile errors, test failures and lints depend on the compiler's wording.",
+  "questions": [
+    {
+      "id": "compile-errors",
+      "q": "In bench/fixture, does the workspace compile when the err feature of fx-bad is on? Give each error with its file, line and code.",
+      "expect": [
+        "E0308",
+        "E0425",
+        "lib\\.rs:13",
+        "lib\\.rs:14"
+      ]
+    },
+    {
+      "id": "failing-tests",
+      "q": "In bench/fixture, which tests fail, and what does each failing assertion or panic say?",
+      "expect": [
+        "add_negative_returns_wrong_value",
+        "left: -2|-2",
+        "panics_in_unwrap",
+        "unwrap\\(\\)"
+      ]
+    },
+    {
+      "id": "clippy",
+      "q": "In bench/fixture, what does clippy report for fx-bad with its lint feature on, and what does it suggest instead?",
+      "expect": [
+        "len_zero",
+        "ptr_arg",
+        "is_empty"
+      ]
+    },
+    {
+      "id": "why-two-versions",
+      "q": "In bench/fixture, why is itoa in the dependency tree, and in how many versions?",
+      "expect": [
+        "0\\.4\\.8",
+        "1\\.0\\.19",
+        "fx-good",
+        "fx-bad"
+      ],
+      "any": [
+        "two|2 versions|both"
+      ]
+    },
+    {
+      "id": "workspace-shape",
+      "q": "How many crates does the workspace at bench/fixture have, and which one sits on top, depending on the other?",
+      "expect": [
+        "\\b2\\b",
+        "fx-good",
+        "fx-bad"
+      ]
+    },
+    {
+      "id": "outdated",
+      "q": "In bench/fixture, which dependencies are behind the latest version, and which crates use them?",
+      "expect": [
+        "itoa",
+        "0\\.4\\.8",
+        "fx-good"
+      ]
+    },
+    {
+      "id": "workspace-shot",
+      "do": "workspace",
+      "params": {
+        "path": "bench/fixture"
+      },
+      "expect": [
+        "fx-good",
+        "depth 1",
+        "fx-bad",
+        "depth 0"
+      ]
+    },
+    {
+      "id": "why-shot",
+      "do": "why",
+      "params": {
+        "crate": "itoa",
+        "path": "bench/fixture"
+      },
+      "expect": [
+        "\"versionCount\": 2",
+        "0\\.4\\.8",
+        "1\\.0\\.19",
+        "fx-good",
+        "fx-bad"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+[package]
+name = "fx-good"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+fx-bad = { path = "../bad" }
+itoa = "0.4"
+
+[dev-dependencies]
